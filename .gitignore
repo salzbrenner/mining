@@ -1,0 +1,38 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# uv pins the interpreter here; it can collide with other version managers
+# (e.g. mise trying to auto-activate/build the pinned version) -- found the
+# hard way, keep it out.
+.python-version
+
+# OS/editor cruft
+.DS_Store
+.vscode/
+.idea/
+
+# Downloaded video/audio/subtitles and dictionary files -- large, local-only
+data/videos/*
+!data/videos/.gitkeep
+data/dictionaries/*
+!data/dictionaries/.gitkeep
+data/backups/*
+!data/backups/.gitkeep
+
+# Personal runtime config: your actual ignore-list/voice-exclusions/
+# required-fields choices, not project defaults -- see the *.yaml.example
+# counterparts, which ARE tracked.
+config/required_fields.yaml
+config/ignored_words.yaml
+config/excluded_voices.yaml
+
+# Unrelated personal notes that happen to sit in this working directory
+word_promt.md

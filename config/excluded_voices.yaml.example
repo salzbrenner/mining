@@ -1,0 +1,5 @@
+# VOICEVOX speaker/style ids permanently excluded from the random-voice
+# picker used during audio backfill -- never chosen, ever. Copy this file
+# to excluded_voices.yaml (gitignored -- your actual list is local-only)
+# and edit by hand or via the Voices page.
+excluded_speaker_ids: []

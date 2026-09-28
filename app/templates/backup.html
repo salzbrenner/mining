@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Backup – Mining{% endblock %}
+{% block content %}
+<h1>Backup Mining</h1>
+<p class="subtitle">On-demand snapshot of <span class="field-tag">Mining</span>
+  as a self-contained .apkg file (notes, media, and full scheduling/review
+  history) -- re-importable via Anki's own File &gt; Import if you ever need
+  to restore one. Not automatic; you decide when. Since the tool now writes
+  directly to Mining, this is your safety net -- run it before a work
+  session.</p>
+
+{% if not connected %}
+  <div class="notice warn">
+    Can't reach AnkiConnect. Make sure Anki is open with the AnkiConnect
+    add-on installed, then reload this page.
+  </div>
+{% else %}
+  <div class="card">
+    {% include "_backup_section.html" %}
+  </div>
+{% endif %}
+{% endblock %}

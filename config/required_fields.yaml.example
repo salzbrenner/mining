@@ -1,0 +1,10 @@
+# Fields that must be non-empty for a note to be considered "complete".
+# Copy this file to required_fields.yaml (gitignored -- your actual config
+# is local-only) and edit freely; also editable from the web UI.
+required_fields:
+  - Expression
+  - ExpressionReading
+  - ExpressionAudio
+  - Sentence
+  - SentenceAudio
+  - MainDefinition

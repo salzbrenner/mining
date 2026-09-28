@@ -1,0 +1,31 @@
+<div id="promote-result">
+  <div class="notice {{ 'warn' if result.failed else '' }}">
+    Added <strong>{{ result.added }}</strong> new notes to Mining.
+    Filled gaps on <strong>{{ result.updated }}</strong> existing notes
+    (empty fields only -- nothing already populated was touched).
+    <strong>{{ result.unchanged }}</strong> already had no gaps to fill.
+    {% if result.failed %}
+      Failed <strong>{{ result.failed }}</strong>:
+      {{ result.failed_expressions | join(", ") }}
+    {% endif %}
+  </div>
+  <div class="stat-row">
+    <div class="stat">
+      <div class="n">{{ status.source_count }}</div>
+      <div class="label">notes in Mining</div>
+    </div>
+    <div class="stat">
+      <div class="n">{{ status.target_count }}</div>
+      <div class="label">notes in Mining 2</div>
+    </div>
+  </div>
+  <button
+    class="btn"
+    hx-post="/clone/promote"
+    hx-target="#promote-result"
+    hx-swap="outerHTML"
+    hx-confirm="Promote Mining 2 into Mining again? (Adds new notes, fills empty fields on existing ones -- never overwrites content Mining already has.)"
+  >
+    Promote again
+  </button>
+</div>

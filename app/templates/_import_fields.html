@@ -1,0 +1,43 @@
+{% if error %}
+  <div class="notice warn">{{ error }}</div>
+{% elif info.note_count == 0 %}
+  <div class="notice warn">That deck has no notes.</div>
+{% else %}
+<div class="card">
+  <p>
+    <strong>{{ info.deck_name }}</strong> — {{ info.note_count }} notes,
+    note type <span class="field-tag">{{ info.model_name }}</span>
+    {% if info.mixed_note_types %}
+      <span class="badge warn">mixed note types — only {{ info.model_name }} notes will be considered</span>
+    {% endif %}
+  </p>
+
+  <form hx-post="/import/run" hx-target="#import-result" hx-swap="innerHTML"
+        hx-confirm="Import from {{ info.deck_name }} into Mining?">
+    <input type="hidden" name="deck_name" value="{{ info.deck_name }}">
+    <input type="hidden" name="model_name" value="{{ info.model_name }}">
+
+    <table>
+      <thead><tr><th>Source field</th><th>→ Lapis field</th></tr></thead>
+      <tbody>
+        {% for f in info.fields %}
+        <tr>
+          <td class="field-tag">{{ f }}</td>
+          <td>
+            <select name="map__{{ f }}">
+              <option value="">— skip —</option>
+              {% for tf in target_fields %}
+                <option value="{{ tf }}" {{ "selected" if tf == f }}>{{ tf }}</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <button class="btn" type="submit">Import</button>
+  </form>
+</div>
+{% endif %}
+<div id="import-result"></div>

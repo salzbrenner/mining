@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Mining{% endblock %}</title>
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Martian+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* ink + cream, torii-red / wave-blue / bamboo-green / carp-gold accents --
+         a Japanese-woodblock-leaning dark palette, not the neon-green cliche */
+      --bg: #15151c;
+      --bg-raised: #1b1b24;
+      --bg-inset: #101015;
+      --fg: #d8d3c4;
+      --fg-dim: #726f6a;
+      --fg-faint: #4a4844;
+      --border: #333140;
+      --border-bright: #4d4a5c;
+      --accent: #e6c384;
+      --accent-fg: #15151c;
+      --ok: #9ec967;
+      --danger: #e6675a;
+      --info: #7e9cd8;
+
+      --mono: "IBM Plex Mono", "Osaka-Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      --display: "Martian Mono", var(--mono);
+    }
+
+    * { box-sizing: border-box; }
+
+    ::selection { background: var(--accent); color: var(--accent-fg); }
+
+    html { color-scheme: dark; }
+
+    body {
+      margin: 0;
+      font-family: var(--mono);
+      font-size: 14px;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+      position: relative;
+    }
+
+    a { color: var(--info); }
+    a:hover { color: var(--accent); }
+
+    header {
+      display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.3rem 1.6rem;
+      padding: 0.85rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-inset);
+    }
+    header .brand {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.02em;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    nav { display: flex; gap: 1.1rem; flex-wrap: wrap; }
+    nav a {
+      color: var(--fg-dim); text-decoration: none; font-size: 0.86rem;
+      padding: 0.1rem 0.05rem; border-bottom: 1px solid transparent;
+    }
+    nav a:hover { color: var(--fg); }
+    nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+
+    h1 {
+      font-family: var(--display);
+      font-size: 1rem; font-weight: 700;
+      letter-spacing: 0.01em;
+      margin: 0 0 0.6rem;
+      color: var(--fg);
+    }
+
+    .subtitle { color: var(--fg-dim); margin: 0 0 1.5rem; font-size: 0.86rem; max-width: 62ch; }
+
+    .card {
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--border-bright);
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.1rem;
+    }
+    .card > strong {
+      display: block; font-family: var(--display); font-size: 0.78rem;
+      letter-spacing: 0.03em; text-transform: uppercase; color: var(--fg-dim);
+      margin-bottom: 0.6rem;
+    }
+
+    .stat-row { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .stat { min-width: 100px; }
+    .stat .n { font-size: 1.6rem; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
+    .stat .label { color: var(--fg-dim); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.03em; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border); }
+    th {
+      color: var(--fg-dim); font-weight: 500; font-size: 0.72rem;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border-bright);
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: rgba(255, 255, 255, 0.025); }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.2em;
+      background: transparent; color: var(--accent); border: 1px solid var(--accent);
+      padding: 0.4rem 0.7rem; font: inherit; font-size: 0.86rem; cursor: pointer;
+      text-decoration: none; border-radius: 0;
+      transition: background 0.1s, color 0.1s;
+    }
+    .btn:hover { background: var(--accent); color: var(--accent-fg); }
+    .btn.secondary { color: var(--fg-dim); border-color: var(--border-bright); }
+    .btn.secondary:hover { background: var(--fg-dim); color: var(--bg); border-color: var(--fg-dim); }
+    .btn.danger { color: var(--danger); border-color: var(--danger); }
+    .btn.danger:hover { background: var(--danger); color: var(--bg-inset); }
+
+    .badge {
+      display: inline-block; font-size: 0.74rem; padding: 0.1rem 0.45rem;
+      color: var(--fg-dim); background: var(--bg-inset); border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .badge.ok { color: var(--ok); border-color: var(--ok); }
+    .badge.warn { color: var(--danger); border-color: var(--danger); }
+
+    .notice {
+      border: 1px solid var(--border); border-left: 3px solid var(--info);
+      padding: 0.65rem 0.9rem; margin-bottom: 1.1rem; background: var(--bg-raised);
+      font-size: 0.86rem;
+    }
+    .notice.warn { border-left-color: var(--danger); }
+
+    .htmx-indicator { opacity: 0; color: var(--fg-dim); font-size: 0.84rem; }
+    .htmx-request.htmx-indicator, .htmx-request .htmx-indicator { opacity: 1; }
+
+    label { display: block; margin-bottom: 0.3rem; font-size: 0.8rem; color: var(--fg-dim); }
+
+    input[type=text], select {
+      width: 100%; padding: 0.5rem 0.6rem; border: 1px solid var(--border-bright);
+      font: inherit; font-size: 0.9rem; margin-bottom: 0.9rem;
+      background: var(--bg-inset); color: var(--fg); border-radius: 0;
+    }
+    input[type=text]:focus, select:focus {
+      outline: none; border-color: var(--accent);
+    }
+    input[type=checkbox] { accent-color: var(--accent); }
+
+    code {
+      font-family: var(--mono); background: var(--bg-inset);
+      border: 1px solid var(--border); padding: 0.05rem 0.3rem; font-size: 0.85em;
+    }
+    .field-tag { font-family: var(--mono); font-size: 0.9em; color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">mining</div>
+    <nav>
+      <a href="/" class="{{ 'active' if active == 'home' }}">home</a>
+      <a href="/backup" class="{{ 'active' if active == 'backup' }}">backup</a>
+      <a href="/import" class="{{ 'active' if active == 'import' }}">import</a>
+      <a href="/videos" class="{{ 'active' if active == 'videos' }}">videos</a>
+      <a href="/audit" class="{{ 'active' if active == 'audit' }}">missing-fields</a>
+      <a href="/ignored-words" class="{{ 'active' if active == 'ignored' }}">ignored-words</a>
+      <a href="/voices" class="{{ 'active' if active == 'voices' }}">voices</a>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

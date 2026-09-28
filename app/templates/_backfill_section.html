@@ -1,0 +1,27 @@
+<div id="backfill-section">
+  {% if result %}
+    {% set counts = result.remaining %}
+    <div class="notice {{ 'warn' if result.failed else '' }}">
+      Added <strong>{{ result.expression_audio_added }}</strong> ExpressionAudio,
+      <strong>{{ result.sentence_audio_added }}</strong> SentenceAudio this batch.
+      {% if result.failed %}<strong>{{ result.failed }}</strong> failed (VOICEVOX hiccup -- safe to retry).{% endif %}
+    </div>
+  {% else %}
+    {% set counts = missing_audio %}
+  {% endif %}
+
+  <p class="subtitle">
+    <strong>{{ counts.missing_expression_audio }}</strong> notes still missing
+    ExpressionAudio, <strong>{{ counts.missing_sentence_audio }}</strong>
+    missing SentenceAudio.
+  </p>
+
+  {% if counts.missing_expression_audio or counts.missing_sentence_audio %}
+    <button class="btn" hx-post="/audit/backfill-audio" hx-target="#backfill-section" hx-swap="outerHTML" hx-indicator="#backfill-spinner">
+      Backfill next batch
+    </button>
+    <span id="backfill-spinner" class="htmx-indicator">synthesizing…</span>
+  {% else %}
+    <span class="badge ok">all caught up</span>
+  {% endif %}
+</div>

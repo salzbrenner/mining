@@ -1,0 +1,58 @@
+<div id="audit-report">
+  <div class="card">
+    <div class="stat-row">
+      <div class="stat">
+        <div class="n">{{ report.total_notes }}</div>
+        <div class="label">total notes</div>
+      </div>
+      <div class="stat">
+        <div class="n">{{ report.complete }}</div>
+        <div class="label">complete</div>
+      </div>
+      <div class="stat">
+        <div class="n">{{ report.incomplete }}</div>
+        <div class="label">incomplete</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <strong>Required fields:</strong>
+    {% for f in report.required_fields %}
+      <span class="badge">{{ f }} — {{ report.per_field_counts[f] }} missing</span>
+    {% endfor %}
+  </div>
+
+  <button
+    class="btn secondary"
+    hx-post="/audit/refresh"
+    hx-target="#audit-report"
+    hx-swap="outerHTML"
+  >
+    Refresh
+  </button>
+
+  {% if report.notes %}
+    <table style="margin-top: 1rem;">
+      <thead>
+        <tr><th>Expression</th><th>Missing</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for n in report.notes[:200] %}
+        <tr>
+          <td>{{ n.expression }}</td>
+          <td>
+            {% for f in n.missing %}<span class="badge warn">{{ f }}</span> {% endfor %}
+          </td>
+          <td>
+            <a href="#" hx-post="/audit/open/{{ n.note_id }}" hx-swap="none">open in Anki</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if report.notes | length > 200 %}
+      <p class="subtitle">Showing first 200 of {{ report.notes | length }}.</p>
+    {% endif %}
+  {% endif %}
+</div>

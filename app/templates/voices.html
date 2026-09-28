@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Voices – Mining{% endblock %}
+{% block content %}
+<h1>VOICEVOX voices</h1>
+<p class="subtitle">Voices marked excluded here are permanently skipped by
+  the random-voice picker used during audio backfill -- never chosen,
+  ever. Edit <code>config/excluded_voices.yaml</code> directly, or toggle
+  below.</p>
+
+{% if not connected %}
+  <div class="notice warn">
+    VOICEVOX not reachable -- install and launch the app first
+    (https://voicevox.hiroshiba.jp/).
+  </div>
+{% else %}
+  <table>
+    <thead>
+      <tr><th>Character</th><th>Style</th><th>ID</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for sp in speakers %}
+        {% for style in sp.styles %}
+          {% include "_voice_row.html" %}
+        {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+{% endblock %}

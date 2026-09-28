@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Ignored Words – Mining{% endblock %}
+{% block content %}
+<h1>Ignored words</h1>
+<p class="subtitle">Headwords excluded from every future Phase 3 scan —
+  added via the "ignore" action in a scan's candidate checklist, or edit
+  <code>config/ignored_words.yaml</code> directly.</p>
+{% include "_ignored_words_list.html" %}
+{% endblock %}

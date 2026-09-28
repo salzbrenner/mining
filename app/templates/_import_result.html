@@ -1,0 +1,12 @@
+{% if error %}
+  <div class="notice warn">{{ error }}</div>
+{% else %}
+<div class="notice {{ 'warn' if result.failed else '' }}">
+  Imported <strong>{{ result.imported }}</strong> notes.
+  Skipped <strong>{{ result.skipped_existing }}</strong> (already present or unmapped Expression).
+  {% if result.failed %}
+    Failed <strong>{{ result.failed }}</strong>:
+    {{ result.failed_expressions | join(", ") }}
+  {% endif %}
+</div>
+{% endif %}

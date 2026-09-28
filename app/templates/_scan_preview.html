@@ -1,0 +1,77 @@
+{% if not result.candidates %}
+  <div class="notice">
+    No new vocabulary found ({{ result.tokens_seen }} tokens scanned,
+    {{ result.tokens_filtered }} filtered out as non-vocabulary).
+  </div>
+{% else %}
+  <p class="subtitle">
+    {{ result.candidates | length }} candidates found —
+    {{ result.tokens_seen }} tokens scanned,
+    {{ result.tokens_filtered }} filtered out as particles/auxiliaries/
+    symbols/unrecognized (sanity-check that count if it looks off),
+    {{ result.rare_filtered }} dropped as rarer than the frequency cutoff
+    (MAX_FREQUENCY_RANK in app/config.py).
+    Rows marked <span class="badge warn">low confidence</span>
+    (proper nouns or single-character fragments) start unchecked.
+  </p>
+  <form
+    hx-post="/videos/{{ video_id }}/scan/commit"
+    hx-target="#scan-result"
+    hx-swap="innerHTML"
+    hx-confirm="Add the checked candidates as new notes to Mining? This generates expression/sentence audio per note, so a large selection can take a while."
+  >
+    <input type="hidden" name="candidates_json" value='{{ candidates_json }}'>
+    <p>
+      <a href="#" onclick="document.querySelectorAll('#scan-candidates input[type=checkbox]').forEach(c => c.checked = true); return false;">select all</a>
+      ·
+      <a href="#" onclick="document.querySelectorAll('#scan-candidates input[type=checkbox]').forEach(c => c.checked = false); return false;">select none</a>
+    </p>
+    <table id="scan-candidates">
+      <thead>
+        <tr>
+          <th></th><th>Expression</th><th>Reading</th><th>POS</th>
+          <th>Freq</th><th>Sentence</th><th>Time</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in result.candidates %}
+        <tr>
+          <td>
+            <input type="checkbox" name="select__{{ loop.index0 }}" {{ "" if c.low_confidence else "checked" }}>
+          </td>
+          <td class="field-tag">
+            {{ c.headword }}
+            {% if c.low_confidence %}<span class="badge warn">low confidence</span>{% endif %}
+          </td>
+          <td>{{ c.reading }}</td>
+          <td><span class="badge">{{ c.pos }}</span></td>
+          <td>{{ c.frequency if c.frequency is not none else "—" }}</td>
+          <td>
+            <button
+              type="button"
+              class="btn secondary"
+              title="Play this sentence's audio"
+              onclick="new Audio('/videos/{{ video_id }}/clip?start_ms={{ c.start_ms }}&end_ms={{ c.end_ms }}').play()"
+            >▶</button>
+            {{ c.sentence }}
+          </td>
+          <td>{{ c.timestamp_label }}</td>
+          <td>
+            <button
+              type="button"
+              class="btn secondary"
+              hx-post="/ignored-words"
+              hx-vals='{{ {"word": c.headword} | tojson }}'
+              hx-params="word"
+              hx-target="closest tr"
+              hx-swap="outerHTML"
+              hx-confirm="unset"
+            >ignore</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button class="btn" type="submit">Add selected to Mining</button>
+  </form>
+{% endif %}

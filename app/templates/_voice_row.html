@@ -1,0 +1,27 @@
+<tr id="voice-row-{{ style.id }}">
+  <td>{{ sp.name }}</td>
+  <td>{{ style.name }}</td>
+  <td>{{ style.id }}</td>
+  <td>
+    {% if style.id in excluded %}
+      <span class="badge warn">excluded</span>
+      <button
+        type="button"
+        class="btn secondary"
+        hx-post="/voices/include"
+        hx-vals='{"speaker_id": {{ style.id }}}'
+        hx-target="#voice-row-{{ style.id }}"
+        hx-swap="outerHTML"
+      >include</button>
+    {% else %}
+      <button
+        type="button"
+        class="btn secondary"
+        hx-post="/voices/exclude"
+        hx-vals='{"speaker_id": {{ style.id }}}'
+        hx-target="#voice-row-{{ style.id }}"
+        hx-swap="outerHTML"
+      >exclude</button>
+    {% endif %}
+  </td>
+</tr>

@@ -1,0 +1,43 @@
+<div id="clone-result">
+  {% if cleared is defined %}
+    <div class="notice warn">
+      Deleted <strong>{{ cleared }}</strong> notes from Mining 2.
+    </div>
+  {% endif %}
+  <div class="notice {{ 'warn' if result.failed else '' }}">
+    Cloned <strong>{{ result.cloned }}</strong> notes.
+    Skipped <strong>{{ result.skipped_existing }}</strong> already present.
+    {% if result.failed %}
+      Failed <strong>{{ result.failed }}</strong>:
+      {{ result.failed_expressions | join(", ") }}
+    {% endif %}
+  </div>
+  <div class="stat-row">
+    <div class="stat">
+      <div class="n">{{ status.source_count }}</div>
+      <div class="label">notes in Mining</div>
+    </div>
+    <div class="stat">
+      <div class="n">{{ status.target_count }}</div>
+      <div class="label">notes in Mining 2</div>
+    </div>
+  </div>
+  <button
+    class="btn"
+    hx-post="/clone/run"
+    hx-target="#clone-result"
+    hx-swap="outerHTML"
+    hx-confirm="Run clone again? (Only new/un-cloned notes will be added.)"
+  >
+    Run clone again
+  </button>
+  <button
+    class="btn danger"
+    hx-post="/clone/clear-and-reclone"
+    hx-target="#clone-result"
+    hx-swap="outerHTML"
+    hx-confirm="Permanently delete all {{ status.target_count }} notes in Mining 2 and re-clone fresh from Mining? This cannot be undone from this tool."
+  >
+    Clear &amp; re-clone Mining 2
+  </button>
+</div>

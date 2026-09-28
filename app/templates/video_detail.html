@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ meta.title if meta else "Video" }} – Mining{% endblock %}
+{% block content %}
+{% if not meta %}
+  <div class="notice warn">Video not found.</div>
+{% else %}
+  <h1>{{ meta.title }}</h1>
+  <p class="subtitle">
+    {{ meta.uploader }} ·
+    <a href="{{ meta.source_url }}" target="_blank" rel="noopener">source</a> ·
+    <span class="badge {{ 'ok' if meta.subtitle_kind == 'manual' else '' }}">{{ meta.subtitle_kind }} subtitles</span>
+  </p>
+
+  <div class="card">
+    {% if dictionaries_ready %}
+      <button class="btn" hx-post="/videos/{{ meta.video_id }}/scan" hx-target="#scan-result">
+        Preview new vocabulary
+      </button>
+      <p class="subtitle">Read-only — shows a checklist of candidates before
+        anything is added to Mining.</p>
+    {% else %}
+      <div class="notice warn">
+        Vocabulary scanning is blocked until the CC-100 frequency dictionary
+        (and ideally a JMdict term-bank dictionary) are placed as .zip files
+        in <code>data/dictionaries/</code> — see SPEC.md §5.
+      </div>
+    {% endif %}
+    <div id="scan-result"></div>
+  </div>
+
+  <div class="card">
+    <strong>{{ lines | length }} subtitle lines</strong>
+    <table>
+      <thead><tr><th>Time</th><th>Text</th></tr></thead>
+      <tbody>
+        {% for l in lines[:300] %}
+        <tr>
+          <td>{{ l.timestamp_label }}</td>
+          <td>{{ l.text }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if lines | length > 300 %}
+      <p class="subtitle">Showing first 300 of {{ lines | length }} lines.</p>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

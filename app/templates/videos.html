@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Videos – Mining{% endblock %}
+{% block content %}
+<h1>Videos</h1>
+<p class="subtitle">Download a YouTube video's audio + Japanese subtitles,
+  then scan the subtitles for new vocabulary.</p>
+
+<div class="card">
+  <label for="url">YouTube URL</label>
+  <input type="text" id="url" name="url" placeholder="https://www.youtube.com/watch?v=...">
+  <button
+    class="btn"
+    hx-post="/videos/add"
+    hx-include="#url"
+    hx-target="#add-result"
+    hx-swap="innerHTML"
+    hx-indicator="#add-spinner"
+  >
+    Download
+  </button>
+  <span id="add-spinner" class="htmx-indicator">downloading…</span>
+  <div id="add-result"></div>
+</div>
+
+{% if videos %}
+<table>
+  <thead><tr><th>Title</th><th>Uploader</th><th>Subtitles</th><th></th></tr></thead>
+  <tbody>
+    {% for v in videos %}
+    <tr>
+      <td>{{ v.title }}</td>
+      <td>{{ v.uploader }}</td>
+      <td><span class="badge {{ 'ok' if v.subtitle_kind == 'manual' else '' }}">{{ v.subtitle_kind }}</span></td>
+      <td><a href="/videos/{{ v.video_id }}">view</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p class="subtitle">No videos downloaded yet.</p>
+{% endif %}
+{% endblock %}

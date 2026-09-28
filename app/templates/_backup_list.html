@@ -1,0 +1,20 @@
+<div id="backup-list">
+  {% if not backups %}
+    <p class="subtitle">No backups yet.</p>
+  {% else %}
+    <table>
+      <thead><tr><th>File</th><th>Created</th><th>Size</th></tr></thead>
+      <tbody>
+        {% for b in backups %}
+        <tr>
+          <td class="field-tag">{{ b.filename }}</td>
+          <td>{{ b.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+          <td>{{ "%.1f"|format(b.size_bytes / 1024 / 1024) }} MB</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="subtitle">Stored in <code>data/backups/</code>. Re-import a
+      file via Anki's own File &gt; Import if you ever need to restore one.</p>
+  {% endif %}
+</div>

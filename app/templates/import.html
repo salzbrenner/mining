@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Import – Mining{% endblock %}
+{% block content %}
+<h1>Import from another deck</h1>
+<p class="subtitle">Pick a source deck, map its fields onto
+  <span class="field-tag">Lapis</span> fields, and import. Notes whose
+  mapped Expression already exists in Mining are skipped.</p>
+
+{% if not connected %}
+  <div class="notice warn">
+    Can't reach AnkiConnect. Make sure Anki is open with the AnkiConnect
+    add-on installed, then reload this page.
+  </div>
+{% else %}
+  <div class="card">
+    <label for="deck">Source deck</label>
+    <select
+      id="deck" name="deck"
+      hx-get="/import/fields"
+      hx-target="#field-map"
+      hx-trigger="change"
+      hx-include="this"
+    >
+      <option value="">— choose a deck —</option>
+      {% for d in decks %}
+        <option value="{{ d }}">{{ d }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div id="field-map"></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,13 @@
+<div id="backup-section">
+  <button class="btn" hx-post="/backup/run" hx-target="#backup-section" hx-swap="outerHTML">
+    Backup Mining now
+  </button>
+  {% if info %}
+    <div class="notice">
+      Backed up Mining to <strong>{{ info.filename }}</strong>
+      ({{ "%.1f"|format(info.size_bytes / 1024 / 1024) }} MB, includes full
+      scheduling/review history).
+    </div>
+  {% endif %}
+  {% include "_backup_list.html" %}
+</div>

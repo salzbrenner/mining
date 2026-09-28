@@ -1,0 +1,23 @@
+<div id="ignored-list">
+  {% if not words %}
+    <p class="subtitle">No ignored words yet.</p>
+  {% else %}
+    <p class="subtitle">{{ words | length }} ignored.</p>
+    <table>
+      <thead><tr><th>Word</th><th></th></tr></thead>
+      <tbody>
+        {% for w in words %}
+        <tr>
+          <td class="field-tag">{{ w }}</td>
+          <td>
+            <form hx-post="/ignored-words/remove" hx-target="#ignored-list" hx-swap="outerHTML" style="display:inline">
+              <input type="hidden" name="word" value="{{ w }}">
+              <button type="submit" class="btn secondary">un-ignore</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+</div>

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Missing Fields – Mining{% endblock %}
+{% block content %}
+<h1>Missing-field audit</h1>
+<p class="subtitle">Notes in <span class="field-tag">Mining</span> missing
+  one or more required fields
+  (edit <code>config/required_fields.yaml</code> to change the list).</p>
+
+{% if not connected %}
+  <div class="notice warn">
+    Can't reach AnkiConnect. Make sure Anki is open with the AnkiConnect
+    add-on installed, then reload this page.
+  </div>
+{% else %}
+  <div class="card">
+    <strong>Backfill audio via VOICEVOX</strong>
+    <p class="subtitle">Synthesizes <span class="field-tag">ExpressionAudio</span>
+      (from the word) and <span class="field-tag">SentenceAudio</span> (from
+      the sentence text) for notes missing them, with a random voice per
+      note for variety. Never overwrites audio a note already has.
+      Processes 30 notes per click (bulk TTS adds up) -- keep clicking
+      "Backfill next batch" to work through the rest.</p>
+    {% if not voicevox_connected %}
+      <div class="notice warn">
+        VOICEVOX not reachable -- install and launch the app first
+        (https://voicevox.hiroshiba.jp/).
+      </div>
+    {% else %}
+      {% include "_backfill_section.html" %}
+    {% endif %}
+  </div>
+
+  {% include "_audit_report.html" %}
+{% endif %}
+{% endblock %}

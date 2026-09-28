@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Clone – Mining 2{% endblock %}
+{% block content %}
+<h1>Clone Mining → Mining 2</h1>
+<p class="subtitle">One-time (but safe to re-run) copy of every note from
+  <span class="field-tag">Mining</span> into
+  <span class="field-tag">Mining 2</span>, so the original deck is never
+  touched. Re-running only clones notes added to Mining since the last run.</p>
+
+{% if not connected %}
+  <div class="notice warn">
+    Can't reach AnkiConnect. Make sure Anki is open with the AnkiConnect
+    add-on installed, then reload this page.
+  </div>
+{% else %}
+  <div class="card">
+    <div class="stat-row">
+      <div class="stat">
+        <div class="n">{{ status.source_count }}</div>
+        <div class="label">notes in Mining</div>
+      </div>
+      <div class="stat">
+        <div class="n">{{ status.target_count }}</div>
+        <div class="label">notes in Mining 2{% if not status.target_deck_exists %} (deck not created yet){% endif %}</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="clone-result">
+    <button
+      class="btn"
+      hx-post="/clone/run"
+      hx-target="#clone-result"
+      hx-swap="outerHTML"
+      hx-confirm="This will create up to {{ status.source_count - status.target_count }} new notes in your live Anki collection (deck: Mining 2). Continue?"
+    >
+      Run clone
+    </button>
+  </div>
+
+  <div class="card">
+    <strong>Promote Mining 2 → Mining</strong>
+    <p class="subtitle">Two things happen, by Expression:
+      <strong>new</strong> notes (in <span class="field-tag">Mining 2</span>
+      but not yet <span class="field-tag">Mining</span>) get added as
+      brand-new cards -- no scheduling to carry over, since they're
+      genuinely new there. <strong>Existing</strong> notes get gap-filled:
+      any field that's empty on the Mining note but populated on Mining 2's
+      copy (e.g. audio you backfilled) gets copied over -- fields Mining
+      already has content for are never touched or overwritten.
+      <span class="field-tag">Mining 2</span> keeps its own copy either way,
+      nothing is removed from it.</p>
+    <div id="promote-result">
+      <button
+        class="btn"
+        hx-post="/clone/promote"
+        hx-target="#promote-result"
+        hx-swap="outerHTML"
+        hx-confirm="Promote Mining 2 into Mining? (Adds new notes, fills empty fields on existing ones -- never overwrites content Mining already has.)"
+      >
+        Promote to Mining
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <strong>Backups</strong>
+    <p class="subtitle">On-demand snapshot of <span class="field-tag">Mining</span>
+      as a self-contained .apkg file (notes, media, and full scheduling/
+      review history) -- re-importable via Anki's own File &gt; Import.
+      Not automatic; you decide when.</p>
+    {% include "_backup_section.html" %}
+  </div>
+
+  <div class="card" style="border-color: var(--danger);">
+    <strong>Danger zone</strong>
+    <p class="subtitle">Permanently deletes every note currently in
+      <span class="field-tag">Mining 2</span> ({{ status.target_count }}
+      right now), then re-clones fresh from <span class="field-tag">Mining</span>
+      ({{ status.source_count }} notes). <span class="field-tag">Mining</span>
+      itself is never touched. Anything you've imported, scanned in, or
+      hand-edited in Mining 2 since the last clone is gone after this --
+      there's no undo from this tool.</p>
+    <button
+      class="btn danger"
+      hx-post="/clone/clear-and-reclone"
+      hx-target="#clone-result"
+      hx-swap="outerHTML"
+      hx-confirm="Permanently delete all {{ status.target_count }} notes in Mining 2 and re-clone fresh from Mining? This cannot be undone from this tool."
+    >
+      Clear &amp; re-clone Mining 2
+    </button>
+  </div>
+{% endif %}
+{% endblock %}

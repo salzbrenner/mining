@@ -1,0 +1,19 @@
+<div class="notice {{ 'warn' if result.failed else '' }}">
+  Added <strong>{{ result.added }}</strong> new notes to Mining.
+  Skipped <strong>{{ result.skipped_existing }}</strong> (already present).
+  {% if result.failed %}Failed <strong>{{ result.failed }}</strong>.{% endif %}
+</div>
+{% if result.expression_audio_failed or result.sentence_audio_failed %}
+<div class="notice warn">
+  {% if result.expression_audio_failed %}
+    ExpressionAudio missing on <strong>{{ result.expression_audio_failed }}</strong>
+    note(s) -- VOICEVOX wasn't reachable at commit time (is the app running?).
+  {% endif %}
+  {% if result.sentence_audio_failed %}
+    SentenceAudio missing on <strong>{{ result.sentence_audio_failed }}</strong>
+    note(s) -- ffmpeg clipping failed.
+  {% endif %}
+  The notes themselves were still created; these fields are just blank and
+  will show up in the Missing Fields audit.
+</div>
+{% endif %}

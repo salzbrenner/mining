@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Mining{% endblock %}
+{% block content %}
+<h1>Mining deck manager</h1>
+<p class="subtitle">Local tool that works directly on the
+  <span class="field-tag">Mining</span> deck — see <code>SPEC.md</code> for
+  the full plan. <a href="/backup">Back it up</a> before a work session.</p>
+
+<div class="card">
+  <strong>AnkiConnect:</strong>
+  {% if connected %}
+    <span class="badge ok">connected</span>
+  {% else %}
+    <span class="badge warn">not reachable</span> — open Anki with the
+    AnkiConnect add-on installed.
+  {% endif %}
+  <br><br>
+  <strong>VOICEVOX:</strong>
+  {% if voicevox_connected %}
+    <span class="badge ok">connected</span>
+  {% else %}
+    <span class="badge warn">not reachable</span> — install and launch the
+    VOICEVOX app (https://voicevox.hiroshiba.jp/) for ExpressionAudio
+    generation during Phase 3 commit. Optional -- notes still get created
+    without it, just with ExpressionAudio left blank.
+  {% endif %}
+</div>
+
+<div class="card">
+  <strong>Status</strong>
+  <ul>
+    <li>Backup: <a href="/backup">available</a></li>
+    <li>Missing-field audit: <a href="/audit">available</a></li>
+    <li>Field-mapped import: <a href="/import">available</a></li>
+    <li>YouTube ingestion: <a href="/videos">available</a></li>
+    <li>SRT vocab scanning:
+      {% if dictionaries_ready %}
+        <a href="/videos">available</a>
+      {% else %}
+        <span class="badge warn">blocked</span> — needs dictionary files in
+        <code>data/dictionaries/</code> (see SPEC.md §5)
+      {% endif %}
+    </li>
+  </ul>
+</div>
+{% endblock %}

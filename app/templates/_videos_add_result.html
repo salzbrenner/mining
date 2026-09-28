@@ -1,0 +1,13 @@
+{% if error %}
+  <div class="notice warn">{{ error }}</div>
+{% elif result %}
+  <div class="notice {{ '' if not result.already_existed else 'warn' }}">
+    {% if result.already_existed %}
+      Already downloaded: <strong>{{ result.meta.title }}</strong>.
+    {% else %}
+      Downloaded <strong>{{ result.meta.title }}</strong>
+      ({{ result.meta.subtitle_kind }} Japanese subtitles).
+    {% endif %}
+    <a href="/videos/{{ result.video_id }}">view</a>
+  </div>
+{% endif %}

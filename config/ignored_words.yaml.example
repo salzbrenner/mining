@@ -1,0 +1,6 @@
+# Headwords permanently excluded from Phase 3 scan results -- e.g. words
+# you already know fluently that keep surfacing because they were never
+# mined via Yomitan. Copy this file to ignored_words.yaml (gitignored --
+# your actual list is local-only) and edit by hand or via the "ignore"
+# action in the scan preview UI.
+ignored_words: []
